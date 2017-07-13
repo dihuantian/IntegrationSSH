@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+
+  <package name="main" extends="struts-default">
+  
+      <action name="randomCode" class="com.Integration.Instrument.TestAction">
+        <result name="success" type="stream"></result>
+      </action>
+      
+      <action name="news_*" class="com.Integration.Action.NewsAction" method="{1}">
+          <result name="success">/main.jsp</result>
+          <result name="fenye">/news.jsp</result>
+          <result name="getRedirectActionNewsComments">/news.jsp</result>
+      </action>
+      
+      <action name="delete_*" class="com.Integration.Action.DeleteNews" method="{1}">
+         <result name="deleteNews">/solo.jsp</result> 
+         <result name="Commentstable" type="redirectAction">
+             <param name="actionName">news_getRedirectActionNewsComments</param>
+         </result> 
+      </action>
+      
+      
+       <action name="addComtent_*" class="com.Integration.Action.AddnewsAction" method="{1}">
+         <result name="Commentstable" type="redirectAction">
+             <param name="actionName">news_getRedirectActionNewsComments</param>
+         </result>
+         <result name="fabuNews">/My.jsp</result>
+         <result name="solo">/solo.jsp</result>
+      </action>
+      
+      <action name="getName_*" class="com.Integration.Action.UserAction" method="{1}">
+          <result name="input">/index.jsp</result>
+          <result name="SUCCESS">/solo.jsp</result>
+          <result name="person">/person.jsp</result>
+          <result name="solo">/solo.jsp</result>
+          <result name="registerPage">/login2.jsp</result>
+      </action>
+  </package>
+  
+</struts>    

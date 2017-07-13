@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"  
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+	
+	
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+	    <property name="username" value="root"></property>
+	    <property name="password" value="iloveyou0315"></property>
+	    <property name="url" value="jdbc:mysql://localhost:3306/newtestshh?useUnicode=true&amp;characterEncoding=utf8"></property>
+	    <property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+	</bean>
+
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="configLocation"
+			value="classpath:config/hibernate.cfg.xml">
+		</property>
+		
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+		<tx:advice id="txAdvice" transaction-manager="transactionManager">
+	    <tx:attributes>
+	        <tx:method name="get*" isolation="DEFAULT" propagation="REQUIRED" read-only="true" />
+	        <tx:method name="save*" isolation="DEFAULT" propagation="REQUIRED" read-only="false" />
+	        <tx:method name="update*" isolation="DEFAULT" propagation="REQUIRED" read-only="false" />
+	        <tx:method name="delete*" isolation="DEFAULT" propagation="REQUIRED" read-only="false" />
+	        <tx:method name="add*" isolation="DEFAULT" propagation="REQUIRED" read-only="false" />
+	    </tx:attributes>
+	</tx:advice> 
+	
+	<aop:config>
+        <aop:pointcut id="aopPointcut" expression="execution(* com.Integration.Service..*(..))" />
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="aopPointcut" />
+    </aop:config>
+    
+    <bean id="baseDao" class="com.Integration.Dao.BaseDaolmpl">
+        <property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>
+    
+    <bean id="userServicelmpl" class="com.Integration.Service.UserServicelmpl">
+        <property name="baseDao" ref="baseDao"></property>
+    </bean>
+    
+    <bean id="newsServicelmpl" class="com.Integration.Service.NewsServicelmpl">
+        <property name="baseDao" ref="baseDao"></property>
+    </bean>
+
+    <bean id="UserAction" class="com.Integration.Action.UserAction">
+        <property name="userServicelmpl" ref="userServicelmpl"></property>
+    </bean>
+    
+    <bean id="NewsAction" class="com.Integration.Action.NewsAction">
+        <property name="newsServicelmpl" ref="newsServicelmpl"></property>
+    </bean>
+    
+    <bean id="usertable" class="com.Integration.Entities.Usertable">
+    </bean>     
+    
+    <bean id="updateUser" class="com.Integration.Action.UserAction">
+        <property name="usertable2" ref="usertable"></property>
+    </bean>    
+    
+    <bean id="newsTable" class="com.Integration.Entities.Newstable">
+    </bean>     
+    
+    <bean id="deleteNewsTable" class="com.Integration.Action.DeleteNews">
+        <property name="newstable" ref="newsTable"></property>
+    </bean> 
+    
+    <bean id="commentstable" class="com.Integration.Entities.Commentstable">
+    </bean>     
+    
+    <bean id="addCommentstable" class="com.Integration.Action.AddnewsAction">
+        <property name="commentstable" ref="commentstable"></property>
+    </bean> 
+    
+       
+</beans>
